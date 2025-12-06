@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  claude-code-console:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: claude-code-console
+    hostname: claude-dev
+    stdin_open: true
+    tty: true
+    volumes:
+      # Персистентное хранение конфигурации Claude
+      - claude-config:/home/claude/.config/claude
+      # Рабочая директория для проектов
+      - claude-workspace:/home/claude/workspace
+      # Опционально: монтирование вашей локальной директории для проектов
+      # - ./projects:/home/claude/projects
+    environment:
+      - TERM=xterm-256color
+    restart: unless-stopped
+    command: /bin/bash
+
+volumes:
+  claude-config:
+    driver: local
+  claude-workspace:
+    driver: local
