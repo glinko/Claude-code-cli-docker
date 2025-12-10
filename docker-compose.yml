@@ -5,24 +5,24 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+
     container_name: claude-code-console
     hostname: claude-dev
     stdin_open: true
     tty: true
+
+    # Рабочая директория внутри контейнера
+    working_dir: /home/claude/workspace
+
     volumes:
-      # Персистентное хранение конфигурации Claude
-      - claude-config:/home/claude/.config/claude
-      # Рабочая директория для проектов
-      - claude-workspace:/home/claude/workspace
-      # Опционально: монтирование вашей локальной директории для проектов
-      # - ./projects:/home/claude/projects
+      # Локальная директория n8n-install как рабочий проект Claude
+      - /home/user/n8n-install:/home/claude/workspace
+
+      # Конфиги Claude CLI лежат в n8n-install/.claudecli
+      - /home/user/n8n-install/.claudecli:/home/claude/.config/claude
+
     environment:
       - TERM=xterm-256color
+
     restart: unless-stopped
     command: /bin/bash
-
-volumes:
-  claude-config:
-    driver: local
-  claude-workspace:
-    driver: local
